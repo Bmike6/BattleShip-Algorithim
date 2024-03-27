@@ -2,44 +2,75 @@ import java.util.*;
 
 class HelloWorld {
     public static void main(String[] args) {
-        String s = "";
-        Scanner scan = new Scanner(s);
-        String[] data = scan.nextLine().split(" ");
-        char[][] array = new char[Integer.parseInt(data[1])][Integer.parseInt(data[0])];
-        int x=-1, y=-1;
+        String s = "....C.....\n....C.....\n....C.....\n....C.....\n....CBBBB.\n..DDDS....\n.....S....\n.....S....\nP.........\nP.........\nA1 A10 J10 J1 I1 E5 E4 E6 F6 G6 H6 F5 F4 F3";
+        char[][] array = new char[10][10];
+        Map<Character, boats> mappedValues = new HashMap<Character, boats>();
+        String[] inputValues;
+        mappedValues.put('C', new boats("carrier", 5));
+        mappedValues.put('B', new boats("battleship", 4));
+        mappedValues.put('D', new boats("destroyer", 3));
+        mappedValues.put('S', new boats("submarine", 3));
+        mappedValues.put('P', new boats("patrol boat", 2));
         
-        for (int i=0; i<array.length; i++)
+        Scanner scan = new Scanner(s);
+        
+        for (int i=0; i<10; i++)
         {
-            char[] line = scan.nextLine().toCharArray();
-            for (int j=0; j<line.length; j++)
+            array[i] = scan.nextLine().toCharArray();    
+        }
+        inputValues = scan.nextLine().split(" ");
+        
+        for (int i=0; i<inputValues.length; i++)
+        {
+            int y = (int)(inputValues[i].charAt(0))-65;
+            int x = Integer.parseInt(inputValues[i].substring(1));
+            
+            if (mappedValues.containsKey(array[y][x-1]))
             {
-                if (line[j]=='@'&&x!=-1)
+                if (!morePieces(x-1, y, array[y][x-1], array))
                 {
-                    x = j;
-                    y = i;
-                    array[i][j] = '.';
-                    continue;
+                    System.out.println(inputValues[i]+" destroyed my "+mappedValues.get(array[y][x-1]).name);
                 }
-                array[i][j] = line[j];
+                else
+                {
+                    System.out.println(inputValues[i]+" is a hit");
+                }
+                array[y][x-1] = 'X';
+                
+            }
+            else
+            {
+                System.out.println(inputValues[i]+" missed");
             }
             
         }
-        mazeSolver(array, x, y);
+    }
+    static boolean morePieces(int x, int y, char lookingFor, char[][] array)
+    {
+        for (int i=0; i<array.length; i++)
+        {
+            for (int j=0; j<array[i].length; j++)
+            {
+                if (array[i][j]==lookingFor&&i!=y||array[i][j]==lookingFor&&j!=x)
+                {
+                    return true;   
+                }
+            }
+            
+        }
+        return false;
+    }
+}
+
+class boats
+{
+    String name;
+    int health;
+    
+    public boats(String name, int health)
+    {
+        this.name = name;
+        this.health = health;
     }
     
-    static void mazeSolver(char[][] array, int x, int y)
-    {
-        if (x==array[0].length||y==array.length||x<0||y<0||array[y][x]=='#'||array[y][x])
-        {
-            return;    
-        }
-        else if (array[y][x]=='@')
-        {
-            return;
-        }
-        array
-        
-        
-        
-    }
 }
